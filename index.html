@@ -129,6 +129,103 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
         @media (max-width: 600px) { .filters-row { flex-direction: column; align-items: stretch; } select { width: 100%; } }
+        /* ========================================= */
+        /* --- OPTYMALIZACJA MOBILNA (RWD) --- */
+        /* ========================================= */
+        
+        @media (max-width: 768px) {
+            
+            /* 1. ZMIANA UKŁADU STRONY */
+            main {
+                padding: 15px; /* Mniejsze marginesy boczne */
+            }
+
+            /* 2. NAPRAWA MENU (NAWIGACJI) */
+            nav {
+                flex-direction: column; /* Ustawia logo nad przyciskami */
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                display: flex;
+                flex-wrap: wrap; /* Pozwala przyciskom spaść do nowej linii */
+                justify-content: center; /* Wyśrodkowuje przyciski */
+                gap: 10px;
+                width: 100%;
+            }
+            
+            .nav-links button {
+                margin: 0;
+                font-size: 0.9rem;
+                padding: 5px 10px;
+                background: rgba(255,255,255,0.05); /* Lekkie tło dla przycisków */
+                border-radius: 15px;
+            }
+
+            /* 3. MNIEJSZE NAGŁÓWKI I BIO */
+            .hero { padding: 20px 0; }
+            #hero-title { font-size: 1.5rem; margin-bottom: 10px; }
+            #hero-bio { font-size: 0.95rem; padding: 0 10px; }
+            
+            /* 4. STATYSTYKI JEDNA POD DRUGĄ */
+            .stats-grid {
+                grid-template-columns: 1fr; /* Tylko jedna kolumna */
+                gap: 15px;
+            }
+            .stat-card { padding: 15px; }
+            .stat-number { font-size: 2.5rem; }
+
+            /* 5. NAPRAWA FILTRÓW I WYSZUKIWARKI */
+            .controls-container { padding: 15px; }
+            
+            .filters-row {
+                flex-direction: column; /* Ustawia przyciski nad sortowaniem */
+                align-items: stretch;
+                gap: 15px;
+            }
+            
+            .btn-group {
+                justify-content: center; /* Wyśrodkowuje filtry */
+                width: 100%;
+            }
+            
+            .filter-btn {
+                flex: 1; /* Przyciski rozciągają się równomiernie */
+                text-align: center;
+                font-size: 0.85rem;
+            }
+
+            select {
+                width: 100%; /* Sortowanie na całą szerokość */
+                padding: 10px;
+            }
+
+            /* 6. SIATKA KART (BIBLIOTEKA) */
+            .grid {
+                grid-template-columns: 1fr; /* Jedna karta na rząd na telefonie */
+            }
+
+            /* 7. PROJEKTY */
+            .project-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .project-year {
+                font-size: 0.8rem;
+            }
+            
+            /* 8. CYTATY */
+            .quote-box::before {
+                font-size: 3rem; /* Mniejszy cudzysłów */
+                top: -10px;
+            }
+            .quote-text {
+                font-size: 1rem;
+            }
+        }
+
     </style>
 </head>
 <body>
