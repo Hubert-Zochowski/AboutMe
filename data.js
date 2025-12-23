@@ -3,7 +3,7 @@
 window.myAppConfig = {
     profile: {
         name: "Hubert Żochowski",
-        image: "", 
+        image: "https://github.com/Hubert-Zochowski/AboutMe/blob/main/me.jpg?raw=true", 
         welcomeMessage: "Moja Kolekcja Kultury",
         bio: "Oto lista książek i filmów, które kształtują moje myślenie.",
         buttonText: "Przeglądaj listę",
@@ -140,4 +140,5 @@ window.myAppConfig = {
             author: "Arthur Ashe"
         }
     ]
+
 };
