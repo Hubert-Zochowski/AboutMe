@@ -8,224 +8,244 @@
     <script src="data.js"></script>
 
     <style>
-        /* --- STYLE BAZOWE --- */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            margin: 0; padding: 0; line-height: 1.6;
-            display: flex; flex-direction: column; min-height: 100vh;
+        /* ========================================= */
+        /* 1. CONFIG & RESET */
+        /* ========================================= */
+        :root { 
+            --bg-body: #0f0f0f;
+            --surface: #181818;
+            --surface-hover: #222222;
+            --accent: #7c4dff; /* Odrobinę jaśniejszy fiolet */
+            --accent-glow: rgba(124, 77, 255, 0.3);
+            --text-main: #f0f0f0;
+            --text-sec: #a0a0a0;
+            --border: #333; 
+            --radius: 16px;
         }
 
-        :root { --surface: #1e1e1e; --accent: #6c5ce7; --text-sec: #a0a0a0; --border: #333; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0; padding: 0; line-height: 1.6;
+            display: flex; flex-direction: column; min-height: 100vh;
+            overflow-x: hidden; /* Zapobiega poziomemu przewijaniu przy animacjach */
+        }
+
+        /* Płynne przewijanie całej strony */
+        html { scroll-behavior: smooth; }
 
         /* Error Box */
         #error-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         .error-content { border: 2px solid red; padding: 20px; background: #220000; color: white; max-width: 400px; }
 
-        /* Nav */
-        nav { background: #1a1a1a; padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .logo { font-weight: bold; font-size: 1.2rem; cursor: pointer; }
-        .nav-links button { background: none; border: none; color: var(--text-sec); font-size: 1rem; cursor: pointer; margin-left: 10px; font-family: inherit; transition: 0.3s; }
-        .nav-links button:hover, .nav-links button.active { color: var(--accent); }
-        .nav-links button.active { font-weight: bold; border-bottom: 2px solid var(--accent); }
-
-        /* Main */
-        main { flex: 1; padding: 20px; max-width: 1000px; margin: 0 auto; width: 100%; }
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.4s; }
-
-        /* Hero (Strona Główna) */
-        .hero { text-align: center; padding: 40px 0; }
-        .avatar { width: 120px; height: 120px; background-color: #333; border-radius: 50%; display: inline-block; margin-bottom: 20px; object-fit: cover; border: 3px solid var(--accent); }
-        .btn-cta { background: var(--accent); color: white; border: none; padding: 10px 25px; border-radius: 20px; cursor: pointer; font-size: 1rem; margin-top: 20px; transition: transform 0.2s; }
-        .btn-cta:hover { transform: scale(1.05); }
-
-        /* Rozszerzony opis "O mnie" */
-        .about-extended {
-            margin: 40px auto;
-            max-width: 700px;
-            text-align: left;
-            background: var(--surface);
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            white-space: pre-line; /* Respektuje Entery w tekście */
-        }
-        .about-extended h3 { margin-top: 0; color: var(--accent); }
-
-        /* Cytaty */
-        .quote-container { margin: 50px auto 20px auto; max-width: 700px; text-align: center; display: none; }
-        .quote-box { background: linear-gradient(145deg, #1e1e1e, #252525); border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent); padding: 30px; border-radius: 8px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .quote-box::before { content: "“"; font-family: Georgia, serif; font-size: 5rem; color: rgba(255, 255, 255, 0.05); position: absolute; top: -20px; left: 10px; }
-        .quote-text { font-size: 1.2rem; font-style: italic; color: #e0e0e0; margin-bottom: 20px; font-family: Georgia, serif; line-height: 1.6; }
-        .quote-author { font-size: 0.95rem; color: var(--accent); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; display: inline-block; border-top: 1px solid #444; padding-top: 10px; }
-
-        /* --- NOWOŚĆ: STYLE DLA PROJEKTÓW --- */
-        .projects-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        .project-card { 
-            background: var(--surface); 
-            padding: 25px; 
-            border-radius: 12px; 
-            border: 1px solid var(--border); 
-            border-left: 5px solid var(--accent); /* Akcent z lewej */
-            transition: transform 0.2s;
-        }
-        .project-card:hover { transform: translateX(5px); border-color: #555; }
-        .project-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; flex-wrap: wrap;}
-        .project-title { font-size: 1.3rem; font-weight: bold; color: white; margin: 0; }
-        .project-year { color: var(--text-sec); font-size: 0.9rem; background: #121212; padding: 2px 8px; border-radius: 4px; }
-        .project-role { color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-bottom: 15px; display: block; }
-        .project-link { display: inline-block; margin-top: 15px; color: white; text-decoration: none; border-bottom: 1px solid var(--accent); font-size: 0.9rem; }
-        .project-link:hover { color: var(--accent); }
-
-        /* Statystyki */
-        .stats-header { margin-bottom: 30px; text-align: center; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .stat-card { background: var(--surface); padding: 25px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
-        .stat-number { font-size: 3rem; font-weight: 800; color: var(--accent); margin-bottom: 5px; line-height: 1; }
-        .stat-label { color: var(--text-sec); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
-
-        /* Kontrolery Biblioteki */
-        .controls-container { background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 30px; }
-        .search-row { margin-bottom: 15px; }
-        .search-input { width: 100%; max-width: 400px; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); background: #121212; color: white; font-size: 1rem; font-family: inherit; }
-        .search-input:focus { outline: 2px solid var(--accent); border-color: transparent; }
-        .filters-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        .filter-btn { background: #121212; color: var(--text-sec); border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
-        .filter-btn:hover { border-color: var(--accent); }
-        .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-        select { background-color: #121212; color: #e0e0e0; border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-family: inherit; outline: none; }
-
-        /* Karty Biblioteki */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--surface); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.2s; }
-        .card:hover { transform: translateY(-3px); border-color: #555; }
-        .card-img { height: 160px; background-color: #2d2d2d; width: 100%; display: flex; align-items: center; justify-content: center; color: #555; object-fit: cover; text-align: center; padding: 10px;}
-        .card-body { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
-        .meta-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.8rem; }
-        .date-label { color: #777; }
-        .author-line { color: var(--accent); font-size: 0.9rem; margin-bottom: 5px; font-weight: 500; }
-        .badge { font-size: 0.7rem; text-transform: uppercase; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
-        .cat-book { background: rgba(52, 152, 219, 0.2); color: #3498db; }
-        .cat-movie { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
-        .cat-series { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
-        .card-link-btn { display: inline-block; margin-top: auto; padding-top: 15px; color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: bold; }
-        .card-link-btn:hover { color: #fff; text-decoration: underline; }
-        .card-description { font-size: 0.9rem; color: #aaa; margin-top: 10px; white-space: pre-line; word-wrap: break-word; line-height: 1.5; }
-        .read-more-btn { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.85rem; font-weight: 600; padding: 0; margin-left: 5px; font-family: inherit; display: inline-block; }
-        .read-more-btn:hover { text-decoration: underline; }
-
-        /* Stopka */
-        .site-footer { background-color: #1a1a1a; border-top: 1px solid var(--border); padding: 40px 20px; margin-top: 40px; text-align: center; }
-        .footer-content h3 { margin-bottom: 10px; color: var(--text-sec); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
-        .footer-email { font-size: 1.3rem; color: var(--accent); text-decoration: none; font-weight: bold; display: block; margin-bottom: 25px; transition: color 0.2s; }
-        .footer-email:hover { color: #fff; }
-        .social-links-container { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        .social-btn { background: var(--surface); color: var(--text-sec); padding: 8px 16px; border-radius: 20px; text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; font-size: 0.9rem; }
-        .social-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateY(-2px); }
-        .footer-copy { margin-top: 40px; font-size: 0.8rem; color: #555; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
-        @media (max-width: 600px) { .filters-row { flex-direction: column; align-items: stretch; } select { width: 100%; } }
         /* ========================================= */
-        /* --- OPTYMALIZACJA MOBILNA (RWD) --- */
+        /* 2. NAWIGACJA (GLASSMORPHISM) */
+        /* ========================================= */
+        nav { 
+            background: rgba(15, 15, 15, 0.75); /* Półprzezroczystość */
+            backdrop-filter: blur(12px); /* Efekt rozmycia szkła */
+            -webkit-backdrop-filter: blur(12px);
+            padding: 15px 20px; 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: sticky; top: 0; z-index: 100; 
+            transition: all 0.3s ease;
+        }
+        
+        .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -0.5px; cursor: pointer; }
+        
+        .nav-links button { 
+            background: transparent; 
+            border: none; 
+            color: var(--text-sec); 
+            font-size: 0.95rem; 
+            cursor: pointer; 
+            margin-left: 5px; 
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: inherit; 
+            font-weight: 500;
+            transition: all 0.3s ease; 
+        }
+        
+        .nav-links button:hover { color: white; background: rgba(255,255,255,0.05); }
+        .nav-links button.active { color: white; background: var(--accent); box-shadow: 0 4px 15px var(--accent-glow); }
+
+        /* ========================================= */
+        /* 3. LAYOUT & SEKCJE */
+        /* ========================================= */
+        main { flex: 1; padding: 40px 20px; max-width: 1100px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        
+        .section { display: none; opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease; }
+        .section.active { display: block; opacity: 1; transform: translateY(0); }
+
+        /* --- ANIMACJE SCROLLOWANIA (Intersection Observer) --- */
+        .scroll-hidden {
+            opacity: 0;
+            transform: translateY(40px); /* Przesunięcie w dół */
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); /* Bardzo płynna krzywa animacji */
+        }
+        .scroll-show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========================================= */
+        /* 4. ELEMENTY UI (HERO, KARTY, BUTTONY) */
         /* ========================================= */
         
-        @media (max-width: 768px) {
-            
-            /* 1. ZMIANA UKŁADU STRONY */
-            main {
-                padding: 15px; /* Mniejsze marginesy boczne */
-            }
+        /* Hero */
+        .hero { text-align: center; padding: 60px 0; }
+        .avatar { 
+            width: 140px; height: 140px; 
+            background-color: #333; border-radius: 50%; 
+            display: inline-block; margin-bottom: 25px; 
+            object-fit: cover; 
+            border: 4px solid var(--surface);
+            box-shadow: 0 0 0 3px var(--accent); /* Podwójna ramka */
+        }
+        #hero-title { font-size: 2.5rem; margin: 0 0 10px 0; letter-spacing: -1px; background: linear-gradient(to right, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+        #hero-bio { color: var(--text-sec); font-size: 1.1rem; max-width: 600px; margin: 0 auto 30px auto; }
 
-            /* 2. NAPRAWA MENU (NAWIGACJI) */
-            nav {
-                flex-direction: column; /* Ustawia logo nad przyciskami */
-                padding: 15px;
-                gap: 15px;
-            }
-            
-            .nav-links {
-                display: flex;
-                flex-wrap: wrap; /* Pozwala przyciskom spaść do nowej linii */
-                justify-content: center; /* Wyśrodkowuje przyciski */
-                gap: 10px;
-                width: 100%;
-            }
-            
-            .nav-links button {
-                margin: 0;
-                font-size: 0.9rem;
-                padding: 5px 10px;
-                background: rgba(255,255,255,0.05); /* Lekkie tło dla przycisków */
-                border-radius: 15px;
-            }
+        .btn-cta { 
+            background: var(--accent); color: white; border: none; 
+            padding: 12px 30px; border-radius: 30px; 
+            cursor: pointer; font-size: 1rem; font-weight: 600;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+            box-shadow: 0 5px 20px var(--accent-glow);
+        }
+        .btn-cta:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 10px 25px var(--accent-glow); }
 
-            /* 3. MNIEJSZE NAGŁÓWKI I BIO */
-            .hero { padding: 20px 0; }
-            #hero-title { font-size: 1.5rem; margin-bottom: 10px; }
-            #hero-bio { font-size: 0.95rem; padding: 0 10px; }
-            
-            /* 4. STATYSTYKI JEDNA POD DRUGĄ */
-            .stats-grid {
-                grid-template-columns: 1fr; /* Tylko jedna kolumna */
-                gap: 15px;
-            }
-            .stat-card { padding: 15px; }
-            .stat-number { font-size: 2.5rem; }
+        /* O Mnie Extended */
+        .about-extended {
+            margin: 60px auto; max-width: 800px; text-align: left;
+            background: var(--surface); padding: 40px; border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.05);
+            white-space: pre-line; line-height: 1.8; color: #ccc;
+        }
+        .about-extended h3 { margin-top: 0; color: var(--accent); font-size: 1.5rem; margin-bottom: 20px;}
 
-            /* 5. NAPRAWA FILTRÓW I WYSZUKIWARKI */
-            .controls-container { padding: 15px; }
-            
-            .filters-row {
-                flex-direction: column; /* Ustawia przyciski nad sortowaniem */
-                align-items: stretch;
-                gap: 15px;
-            }
-            
-            .btn-group {
-                justify-content: center; /* Wyśrodkowuje filtry */
-                width: 100%;
-            }
-            
-            .filter-btn {
-                flex: 1; /* Przyciski rozciągają się równomiernie */
-                text-align: center;
-                font-size: 0.85rem;
-            }
-
-            select {
-                width: 100%; /* Sortowanie na całą szerokość */
-                padding: 10px;
-            }
-
-            /* 6. SIATKA KART (BIBLIOTEKA) */
-            .grid {
-                grid-template-columns: 1fr; /* Jedna karta na rząd na telefonie */
-            }
-
-            /* 7. PROJEKTY */
-            .project-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-            .project-year {
-                font-size: 0.8rem;
-            }
-            
-            /* 8. CYTATY */
-            .quote-box::before {
-                font-size: 3rem; /* Mniejszy cudzysłów */
-                top: -10px;
-            }
-            .quote-text {
-                font-size: 1rem;
-            }
+        /* Karty Projektów & Biblioteki */
+        .grid, .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        
+        .card, .project-card { 
+            background: var(--surface); 
+            border-radius: var(--radius); 
+            overflow: hidden; 
+            border: 1px solid rgba(255,255,255,0.03); 
+            display: flex; flex-direction: column; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s;
+        }
+        
+        .card:hover, .project-card:hover { 
+            transform: translateY(-8px); 
+            background: var(--surface-hover);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+            border-color: rgba(255,255,255,0.1);
         }
 
+        /* Specyficzne dla Biblioteki */
+        .card-img { 
+            height: 180px; width: 100%; 
+            background: #252525; display: flex; align-items: center; justify-content: center; 
+            color: #555; object-fit: cover; 
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .card-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .meta-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.8rem; }
+        
+        .badge { 
+            font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.5px;
+        }
+        .cat-book { background: rgba(52, 152, 219, 0.15); color: #5dade2; }
+        .cat-movie { background: rgba(231, 76, 60, 0.15); color: #ec7063; }
+        .cat-series { background: rgba(46, 204, 113, 0.15); color: #58d68d; }
+
+        /* Specyficzne dla Projektów */
+        .project-card { padding: 25px; border-left: 4px solid var(--accent); }
+        .project-title { font-size: 1.4rem; font-weight: 700; color: white; margin: 0; }
+        .project-year { opacity: 0.6; font-size: 0.85rem; background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 6px;}
+        .project-role { color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-top: 5px; display: block; margin-bottom: 15px; }
+
+        /* Statystyki */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .stat-card { 
+            background: var(--surface); padding: 30px 20px; border-radius: var(--radius); 
+            border: 1px solid rgba(255,255,255,0.03); text-align: center; 
+        }
+        .stat-number { font-size: 3.5rem; font-weight: 800; color: var(--accent); margin-bottom: 0px; line-height: 1; letter-spacing: -2px;}
+        .stat-label { color: var(--text-sec); font-size: 0.8rem; letter-spacing: 1px; font-weight: 600; margin-top: 10px; display: block; }
+
+        /* Kontrolery (Search/Filter) */
+        .controls-container { 
+            background: var(--surface); padding: 25px; border-radius: var(--radius); 
+            border: 1px solid rgba(255,255,255,0.03); margin-bottom: 40px; 
+        }
+        .search-input { 
+            width: 100%; max-width: 400px; padding: 14px 20px; border-radius: 12px; 
+            border: 1px solid var(--border); background: #0a0a0a; color: white; 
+            font-size: 1rem; transition: 0.3s;
+        }
+        .search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.1); }
+        
+        .filter-btn { 
+            background: transparent; color: var(--text-sec); border: 1px solid var(--border); 
+            padding: 8px 20px; border-radius: 25px; cursor: pointer; font-size: 0.9rem; transition: 0.3s; 
+        }
+        .filter-btn:hover { border-color: var(--text-main); color: var(--text-main); }
+        .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        
+        select { 
+            background-color: #0a0a0a; color: #e0e0e0; border: 1px solid var(--border); 
+            padding: 8px 16px; border-radius: 25px; cursor: pointer; outline: none; 
+        }
+
+        /* Cytaty */
+        .quote-container { margin: 80px auto 40px auto; max-width: 700px; text-align: center; display: none; }
+        .quote-box { 
+            background: linear-gradient(145deg, #1a1a1a, #222); 
+            padding: 40px; border-radius: var(--radius); position: relative; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+        }
+        .quote-text { font-size: 1.4rem; font-style: italic; color: #ddd; margin-bottom: 25px; font-family: Georgia, serif; }
+        .quote-author { color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem;}
+
+        /* Stopka */
+        .site-footer { 
+            background-color: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.05); 
+            padding: 60px 20px; margin-top: 80px; text-align: center; 
+        }
+        .social-btn { 
+            background: rgba(255,255,255,0.05); color: #ccc; padding: 10px 20px; 
+            border-radius: 30px; text-decoration: none; display: inline-block; margin: 5px; transition: 0.3s;
+        }
+        .social-btn:hover { background: var(--accent); color: white; transform: translateY(-3px); }
+
+        /* Czytaj dalej / Opisy */
+        .card-description { font-size: 0.95rem; color: #999; margin-top: 15px; white-space: pre-line; line-height: 1.6; }
+        .read-more-btn { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.9rem; font-weight: 600; padding: 0; margin-left: 5px; }
+
+        /* ========================================= */
+        /* 5. MOBILE (RESPONSYWNOŚĆ) */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            nav { flex-direction: column; padding: 15px; gap: 15px; }
+            .nav-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; width: 100%; }
+            .nav-links button { margin: 0; font-size: 0.85rem; background: rgba(255,255,255,0.05); }
+            
+            .hero { padding: 30px 0; }
+            #hero-title { font-size: 2rem; }
+            
+            .stats-grid { grid-template-columns: 1fr; gap: 15px; }
+            .stat-number { font-size: 3rem; }
+            
+            .filters-row { flex-direction: column; align-items: stretch; gap: 15px; }
+            .btn-group { justify-content: center; width: 100%; display: flex; }
+            .filter-btn { flex: 1; text-align: center; }
+            
+            .grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -233,8 +253,8 @@
     <div id="error-overlay">
         <div class="error-content">
             <h3>⚠ Nie widać pliku data.js</h3>
-            <p>Upewnij się, że plik <b>data.js</b> leży w tym samym folderze co ten plik.</p>
-            <button onclick="location.reload()" style="margin-top:10px; cursor:pointer;">Odśwież</button>
+            <p>Upewnij się, że plik <b>data.js</b> leży w tym samym folderze.</p>
+            <button onclick="location.reload()" style="margin-top:10px; cursor:pointer; padding: 5px 15px;">Odśwież</button>
         </div>
     </div>
 
@@ -250,41 +270,40 @@
 
     <main>
         <section id="view-home" class="section active">
-            <div class="hero">
+            <div class="hero scroll-hidden">
                 <img src="" onerror="this.style.display='none'" class="avatar" id="hero-img">
-                <div id="avatar-placeholder" class="avatar" style="display:none; line-height:120px; color:#555;">FOTO</div>
+                <div id="avatar-placeholder" class="avatar" style="display:none; line-height:140px; color:#555; text-align:center;">FOTO</div>
                 <h1 id="hero-title">...</h1>
-                <p id="hero-bio" style="color:#aaa;">...</p>
-                
+                <p id="hero-bio">...</p>
                 <button class="btn-cta" onclick="go('projects')" id="hero-btn">Zobacz Projekty</button>
+            </div>
 
-                <div id="about-extended-container" class="about-extended" style="display:none;">
-                    <h3>O mnie</h3>
-                    <div id="about-extended-text">...</div>
-                </div>
+            <div id="about-extended-container" class="about-extended scroll-hidden" style="display:none;">
+                <h3>O mnie</h3>
+                <div id="about-extended-text">...</div>
+            </div>
 
-                <div id="random-quote-container" class="quote-container">
-                    <div class="quote-box">
-                        <p class="quote-text" id="quote-text">...</p>
-                        <div class="quote-author" id="quote-author">...</div>
-                    </div>
+            <div id="random-quote-container" class="quote-container scroll-hidden">
+                <div class="quote-box">
+                    <div style="font-size:3rem; position:absolute; top:-20px; left:20px; opacity:0.1; font-family:serif;">“</div>
+                    <p class="quote-text" id="quote-text">...</p>
+                    <div class="quote-author" id="quote-author">...</div>
                 </div>
             </div>
         </section>
 
         <section id="view-projects" class="section">
-            <div class="stats-header">
-                <h2>Projekty i Osiągnięcia</h2>
-                <p style="color:#777">Rzeczy, które tworzę i wyzwania, które podejmuję.</p>
+            <div class="hero scroll-hidden" style="padding: 20px 0 40px 0;">
+                <h2 style="font-size:2rem; margin-bottom:10px;">Projekty</h2>
+                <p style="color:#777">To co tworzę po godzinach.</p>
             </div>
-            <div id="projects-grid" class="projects-grid">
-                </div>
+            <div id="projects-grid" class="projects-grid"></div>
         </section>
 
         <section id="view-tracker" class="section">
-            <div class="controls-container">
+            <div class="controls-container scroll-hidden">
                 <div class="search-row">
-                    <input type="text" id="search-input" class="search-input" placeholder="Szukaj po tytule lub autorze..." oninput="handleSearch(this.value)">
+                    <input type="text" id="search-input" class="search-input" placeholder="Szukaj..." oninput="handleSearch(this.value)">
                 </div>
                 <div class="filters-row">
                     <div class="btn-group">
@@ -294,10 +313,9 @@
                         <button class="filter-btn" onclick="setFilter('series', this)">Seriale</button>
                     </div>
                     <select id="sort-select" onchange="setSort(this.value)">
-                        <option value="newest">Najnowsze (Data)</option>
-                        <option value="oldest">Najstarsze (Data)</option>
+                        <option value="newest">Najnowsze</option>
+                        <option value="oldest">Najstarsze</option>
                         <option value="rating-high">Ocena: Najwyższa</option>
-                        <option value="rating-low">Ocena: Najniższa</option>
                     </select>
                 </div>
             </div>
@@ -305,47 +323,55 @@
         </section>
 
         <section id="view-stats" class="section">
-            <div class="stats-header">
-                <h2 id="stats-year-title">Podsumowanie Roku ....</h2>
-                <p style="color:#777">Twoja aktywność kulturalna w bieżącym roku.</p>
+            <div class="hero scroll-hidden" style="padding: 20px 0 40px 0;">
+                <h2 id="stats-year-title" style="font-size:2rem; margin-bottom:10px;">Podsumowanie</h2>
+                <p style="color:#777">Liczby nie kłamią.</p>
             </div>
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="stat-books">0</div>
-                    <div class="stat-label">Przeczytane Książki</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="stat-movies">0</div>
-                    <div class="stat-label">Obejrzane Filmy</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="stat-series">0</div>
-                    <div class="stat-label">Seriale</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="stat-total" style="color:white">0</div>
-                    <div class="stat-label">Łącznie w tym roku</div>
-                </div>
+                <div class="stat-card scroll-hidden"><div class="stat-number" id="stat-books">0</div><span class="stat-label">Książki</span></div>
+                <div class="stat-card scroll-hidden"><div class="stat-number" id="stat-movies">0</div><span class="stat-label">Filmy</span></div>
+                <div class="stat-card scroll-hidden"><div class="stat-number" id="stat-series">0</div><span class="stat-label">Seriale</span></div>
+                <div class="stat-card scroll-hidden"><div class="stat-number" id="stat-total" style="color:white">0</div><span class="stat-label">Łącznie</span></div>
             </div>
         </section>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer scroll-hidden">
         <div class="footer-content">
-            <h3>Skontaktuj się ze mną</h3>
-            <a href="mailto:..." id="footer-email" class="footer-email">...</a>
-            <div id="footer-socials" class="social-links-container"></div>
-            <div class="footer-copy">&copy; <span id="footer-year"></span> Personal Website</div>
+            <h3 style="color:#666; font-size:0.9rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:20px;">Kontakt</h3>
+            <a href="mailto:..." id="footer-email" style="font-size:1.2rem; color:white; text-decoration:none; font-weight:700;">...</a>
+            <div id="footer-socials" style="margin-top:30px;"></div>
+            <div class="footer-copy" style="margin-top:40px; color:#444; font-size:0.8rem;">&copy; <span id="footer-year"></span> Personal Tracker</div>
         </div>
     </footer>
 
     <script>
-        // --- 1. ZMIENNE STANU ---
         let currentFilter = 'all';
         let currentSort = 'newest'; 
         let currentSearch = '';
 
-        // --- 2. START APLIKACJI ---
+        // --- OBSERVER DO ANIMACJI SCROLLOWANIA ---
+        // To jest serce "doczytywania" przy scrollu
+        const observerOptions = {
+            threshold: 0.1, // Element musi być w 10% widoczny, żeby odpalić animację
+            rootMargin: "0px 0px -50px 0px" // Lekki margines od dołu
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('scroll-show');
+                    observer.unobserve(entry.target); // Animuj tylko raz
+                }
+            });
+        }, observerOptions);
+
+        function observeElements() {
+            // Szukamy wszystkich elementów z klasą 'scroll-hidden' i zaczynamy je obserwować
+            document.querySelectorAll('.scroll-hidden').forEach((el) => observer.observe(el));
+        }
+
+        // --- START ---
         if (typeof window.myAppConfig === 'undefined') {
             document.getElementById('error-overlay').style.display = 'flex';
         } else {
@@ -355,177 +381,170 @@
         function startApp() {
             const data = window.myAppConfig;
             
-            // Profil - Podstawowe
+            // Wypełnianie danych profilu
             document.getElementById('nav-name').innerText = data.profile.name;
             document.getElementById('hero-title').innerText = data.profile.welcomeMessage;
             document.getElementById('hero-bio').innerText = data.profile.bio;
             
-            // Profil - Rozszerzony (NOWOŚĆ)
             if (data.profile.aboutMeExtended) {
                 document.getElementById('about-extended-container').style.display = 'block';
                 document.getElementById('about-extended-text').innerText = data.profile.aboutMeExtended;
             }
 
             const imgEl = document.getElementById('hero-img');
-            if(data.profile.image) {
-                imgEl.src = data.profile.image;
-            } else { 
-                imgEl.style.display = 'none'; 
-                document.getElementById('avatar-placeholder').style.display = 'inline-block'; 
-            }
+            if(data.profile.image) imgEl.src = data.profile.image;
+            else { imgEl.style.display = 'none'; document.getElementById('avatar-placeholder').style.display = 'inline-block'; }
 
             // Stopka
             if(data.profile.email) {
-                const mailLink = document.getElementById('footer-email');
-                mailLink.innerText = data.profile.email;
-                mailLink.href = "mailto:" + data.profile.email;
+                const mail = document.getElementById('footer-email');
+                mail.innerText = data.profile.email;
+                mail.href = "mailto:" + data.profile.email;
             }
             if(data.profile.socialLinks) {
                 const socialContainer = document.getElementById('footer-socials');
-                socialContainer.innerHTML = ''; // Czyścimy przed dodaniem
+                socialContainer.innerHTML = '';
                 data.profile.socialLinks.forEach(link => {
                     const btn = document.createElement('a');
-                    btn.href = link.url;
-                    btn.innerText = link.name;
-                    btn.className = 'social-btn';
-                    btn.target = "_blank";
+                    btn.href = link.url; btn.innerText = link.name; btn.className = 'social-btn'; btn.target = "_blank";
                     socialContainer.appendChild(btn);
                 });
             }
             document.getElementById('footer-year').innerText = new Date().getFullYear();
 
-            // Uruchomienie sekcji
+            // Renderowanie sekcji
             renderProjects();
             renderRandomQuote(); 
             calculateStats();
             processAndRender();
+
+            // Uruchomienie obserwatora animacji po załadowaniu
+            setTimeout(observeElements, 100);
         }
 
-        // --- 3. PROJEKTY (NOWA FUNKCJA) ---
         function renderProjects() {
             const projects = window.myAppConfig.projects;
             const container = document.getElementById('projects-grid');
             container.innerHTML = '';
+            if (!projects || projects.length === 0) { container.innerHTML = '<p>Brak projektów.</p>'; return; }
 
-            if (!projects || projects.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#777;">Brak projektów do wyświetlenia.</p>';
-                return;
-            }
-
-            projects.forEach(p => {
-                let linkHtml = p.link ? `<a href="${p.link}" target="_blank" class="project-link">Zobacz szczegóły &rarr;</a>` : '';
-                
+            projects.forEach((p, index) => {
+                let linkHtml = p.link ? `<a href="${p.link}" target="_blank" style="color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent); margin-top:auto; display:inline-block; font-size:0.9rem;">Zobacz &rarr;</a>` : '';
+                // Dodajemy klasę scroll-hidden oraz opóźnienie (style) dla efektu kaskady
                 let html = `
-                    <div class="project-card">
-                        <div class="project-header">
+                    <div class="project-card scroll-hidden" style="transition-delay: ${index * 50}ms">
+                        <div style="margin-bottom:10px;">
                             <h3 class="project-title">${p.title}</h3>
                             <span class="project-year">${p.year}</span>
                         </div>
                         <span class="project-role">${p.role}</span>
-                        <p style="color:#aaa; font-size:0.95rem; line-height:1.6;">${p.description}</p>
+                        <p style="color:#aaa; font-size:0.9rem; line-height:1.6; flex-grow:1;">${p.description}</p>
                         ${linkHtml}
-                    </div>
-                `;
+                    </div>`;
                 container.insertAdjacentHTML('beforeend', html);
             });
         }
-
-        // --- 4. LOSOWY CYTAT ---
-        function renderRandomQuote() {
-            const data = window.myAppConfig;
-            if (data.quotes && data.quotes.length > 0) {
-                const randomIndex = Math.floor(Math.random() * data.quotes.length);
-                const randomQuote = data.quotes[randomIndex];
-                document.getElementById('quote-text').innerText = randomQuote.text;
-                document.getElementById('quote-author').innerText = randomQuote.author;
-                document.getElementById('random-quote-container').style.display = 'block';
-            }
-        }
-
-        // --- 5. STATYSTYKI ---
-        function calculateStats() {
-            const currentYear = new Date().getFullYear();
-            document.getElementById('stats-year-title').innerText = `Podsumowanie Roku ${currentYear}`;
-            const items = window.myAppConfig.items;
-            const thisYearItems = items.filter(item => item.date.startsWith(currentYear.toString()));
-            document.getElementById('stat-books').innerText = thisYearItems.filter(i => i.category === 'book').length;
-            document.getElementById('stat-movies').innerText = thisYearItems.filter(i => i.category === 'movie').length;
-            document.getElementById('stat-series').innerText = thisYearItems.filter(i => i.category === 'series').length;
-            document.getElementById('stat-total').innerText = thisYearItems.length;
-        }
-
-        // --- 6. BIBLIOTEKA (Wyszukiwanie, Filtry, Render) ---
-        function handleSearch(val) { currentSearch = val.toLowerCase(); processAndRender(); }
-        function setFilter(cat, btn) {
-            currentFilter = cat;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-            processAndRender();
-        }
-        function setSort(val) { currentSort = val; processAndRender(); }
-
-        function processDescription(text, id) {
-            const limit = 120;
-            if (!text) return '';
-            if (text.length <= limit) return text;
-            const shortText = text.substring(0, limit) + "...";
-            const fullText = text;
-            return `<span id="desc-short-${id}">${shortText}</span><span id="desc-full-${id}" style="display:none;">${fullText}</span><button onclick="toggleReadMore(${id})" id="btn-more-${id}" class="read-more-btn">Czytaj dalej</button>`;
-        }
-        window.toggleReadMore = function(id) {
-            const shortSpan = document.getElementById(`desc-short-${id}`);
-            const fullSpan = document.getElementById(`desc-full-${id}`);
-            const btn = document.getElementById(`btn-more-${id}`);
-            if (fullSpan.style.display === "none") { fullSpan.style.display = "inline"; shortSpan.style.display = "none"; btn.innerText = " « Zwiń"; } 
-            else { fullSpan.style.display = "none"; shortSpan.style.display = "inline"; btn.innerText = "Czytaj dalej"; }
-        };
 
         function processAndRender() {
             let items = [...window.myAppConfig.items];
             if (currentFilter !== 'all') items = items.filter(item => item.category === currentFilter);
             if (currentSearch.length > 0) items = items.filter(item => (item.title.toLowerCase().includes(currentSearch) || (item.author && item.author.toLowerCase().includes(currentSearch))));
+            
             items.sort((a, b) => {
                 if (currentSort === 'newest') return new Date(b.date) - new Date(a.date);
                 if (currentSort === 'oldest') return new Date(a.date) - new Date(b.date);
                 if (currentSort === 'rating-high') return b.rating - a.rating;
-                if (currentSort === 'rating-low') return a.rating - b.rating;
                 return 0;
             });
-            renderGrid(items);
-        }
 
-        function renderGrid(items) {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
-            if(items.length === 0) { grid.innerHTML = '<p style="color:#777; grid-column: 1/-1; text-align:center;">Brak wyników.</p>'; return; }
-            items.forEach(item => {
+            if(items.length === 0) { grid.innerHTML = '<p style="color:#777;">Brak wyników.</p>'; return; }
+
+            items.forEach((item, index) => {
                 let badgeClass = item.category === 'book' ? 'cat-book' : item.category === 'movie' ? 'cat-movie' : 'cat-series';
                 let catName = item.category === 'book' ? 'KSIĄŻKA' : item.category === 'movie' ? 'FILM' : 'SERIAL';
                 let imgHtml = item.image ? `<img src="${item.image}" class="card-img" alt="${item.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">` : `<div class="card-img">${item.title}</div>`;
-                let linkHtml = item.link ? `<a href="${item.link}" target="_blank" class="card-link-btn">Zobacz więcej ↗</a>` : '';
-                let authorHtml = item.author ? `<div class="author-line">${item.author}</div>` : '';
-                let descriptionHtml = processDescription(item.description, item.id);
+                let linkHtml = item.link ? `<a href="${item.link}" target="_blank" style="margin-top:auto; color:var(--accent); text-decoration:none; font-size:0.9rem;">Więcej &rarr;</a>` : '';
+                let authorHtml = item.author ? `<div style="color:var(--accent); font-size:0.9rem; font-weight:600; margin-bottom:5px;">${item.author}</div>` : '';
+                let descHtml = processDescription(item.description, item.id);
+
                 let html = `
-                    <div class="card">
-                        ${imgHtml}<div class="card-body"><div class="meta-row"><span class="badge ${badgeClass}">${catName}</span><span class="date-label">${item.date}</span></div>
-                        <h3 style="margin:0 0 2px 0; font-size:1.2rem;">${item.title}</h3>${authorHtml}
-                        <div style="color:#f1c40f; font-weight:bold; font-size:0.9rem; margin-top:5px;">★ ${item.rating}/10</div>
-                        <p class="card-description">${descriptionHtml}</p>${linkHtml}</div>
+                    <div class="card scroll-hidden" style="transition-delay: ${(index % 5) * 50}ms"> 
+                        ${imgHtml}
+                        <div class="card-body">
+                            <div class="meta-row"><span class="badge ${badgeClass}">${catName}</span><span style="color:#666;">${item.date}</span></div>
+                            <h3 style="margin:0 0 5px 0; font-size:1.1rem; line-height:1.3;">${item.title}</h3>
+                            ${authorHtml}
+                            <div style="color:#f1c40f; font-weight:bold; font-size:0.9rem;">★ ${item.rating}/10</div>
+                            <p class="card-description">${descHtml}</p>
+                            ${linkHtml}
+                        </div>
                     </div>`;
                 grid.insertAdjacentHTML('beforeend', html);
             });
+            
+            // Po wyrenderowaniu musimy "podpiąć" nowe elementy pod obserwatora
+            observeElements();
         }
 
-        // --- 7. NAWIGACJA (Menu) ---
+        // Funkcje pomocnicze
+        function renderRandomQuote() {
+            const data = window.myAppConfig;
+            if (data.quotes && data.quotes.length > 0) {
+                const randomQuote = data.quotes[Math.floor(Math.random() * data.quotes.length)];
+                document.getElementById('quote-text').innerText = randomQuote.text;
+                document.getElementById('quote-author').innerText = randomQuote.author;
+                document.getElementById('random-quote-container').style.display = 'block';
+            }
+        }
+        function calculateStats() {
+            const year = new Date().getFullYear();
+            document.getElementById('stats-year-title').innerText = `Podsumowanie ${year}`;
+            const items = window.myAppConfig.items.filter(i => i.date.startsWith(year.toString()));
+            document.getElementById('stat-books').innerText = items.filter(i => i.category === 'book').length;
+            document.getElementById('stat-movies').innerText = items.filter(i => i.category === 'movie').length;
+            document.getElementById('stat-series').innerText = items.filter(i => i.category === 'series').length;
+            document.getElementById('stat-total').innerText = items.length;
+        }
+        function handleSearch(val) { currentSearch = val.toLowerCase(); processAndRender(); }
+        function setFilter(cat, btn) { currentFilter = cat; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); if(btn) btn.classList.add('active'); processAndRender(); }
+        function setSort(val) { currentSort = val; processAndRender(); }
+        function processDescription(text, id) {
+            if (!text) return ''; const limit = 100; if(text.length <= limit) return text;
+            return `<span id="s-${id}">${text.substring(0,limit)}...</span><span id="f-${id}" style="display:none">${text}</span><button onclick="tg(${id})" id="b-${id}" class="read-more-btn">rozwiń</button>`;
+        }
+        window.tg = function(id) {
+            let s=document.getElementById(`s-${id}`), f=document.getElementById(`f-${id}`), b=document.getElementById(`b-${id}`);
+            if(f.style.display==='none'){f.style.display='inline';s.style.display='none';b.innerText='zwiń';}else{f.style.display='none';s.style.display='inline';b.innerText='rozwiń';}
+        };
+
+        // --- NAWIGACJA + RESTART ANIMACJI ---
         function go(view) {
-            document.querySelectorAll('.section').forEach(e => e.classList.remove('active'));
-            document.getElementById('view-' + view).classList.add('active');
-            document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+            // Ukryj wszystko
+            document.querySelectorAll('.section').forEach(e => {
+                e.classList.remove('active');
+            });
+
+            // Aktywuj wybrany widok
+            const activeSection = document.getElementById('view-' + view);
+            activeSection.classList.add('active');
             
-            if(view === 'home') document.getElementById('btn-home').classList.add('active');
-            if(view === 'projects') document.getElementById('btn-projects').classList.add('active');
-            if(view === 'stats') document.getElementById('btn-stats').classList.add('active');
-            if(view === 'tracker') document.getElementById('btn-tracker').classList.add('active');
+            // Menu active state
+            document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+            if(document.getElementById('btn-'+view)) document.getElementById('btn-'+view).classList.add('active');
+            
+            // Ważne: Przewiń na górę
+            window.scrollTo(0, 0);
+
+            // Zresetuj animacje wewnątrz nowej sekcji
+            // (Usuwamy klasę scroll-show, żeby obserwator mógł ją nadać ponownie przy przewijaniu)
+            activeSection.querySelectorAll('.scroll-hidden').forEach(el => {
+                el.classList.remove('scroll-show');
+            });
+
+            // Ponownie uruchom obserwatora dla elementów w tej sekcji
+            observeElements();
         }
     </script>
 </body>
