@@ -4,8 +4,8 @@ window.myAppConfig = {
     profile: {
         name: "Hubert Żochowski",
         image: "https://github.com/Hubert-Zochowski/AboutMe/blob/main/me.jpg?raw=true", 
-        welcomeMessage: "Moja Kolekcja Kultury",
-        bio: "Oto lista książek i filmów, które kształtują moje myślenie.",
+        welcomeMessage: "Cześć, miło mi Cię powitać na mojej stronie",
+        bio: "Poniżej znajdziesz listę książek, filmów i seriali, które miałem okazję przeczytać lub obejrzeć",
         buttonText: "Przeglądaj listę",
         
         // --- NOWE DANE KONTAKTOWE ---
@@ -142,3 +142,4 @@ window.myAppConfig = {
     ]
 
 };
+
