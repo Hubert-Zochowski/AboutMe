@@ -5,7 +5,15 @@ window.myAppConfig = {
         name: "Hubert Żochowski",
         image: "https://github.com/Hubert-Zochowski/AboutMe/blob/main/me.jpg?raw=true", 
         welcomeMessage: "Cześć, miło mi Cię powitać na mojej stronie",
-        bio: "Poniżej znajdziesz listę książek, filmów i seriali, które miałem okazję przeczytać lub obejrzeć",
+        // Krótkie bio pod zdjęciem
+        bio: "Pasjonat technologii, kultury i rozwoju osobistego.",
+        
+        // --- NOWOŚĆ: DŁUŻSZY OPIS O TOBIE ---
+        aboutMeExtended: `Jestem osobą, która uwielbia łączyć kropki między różnymi dziedzinami wiedzy. Na co dzień zajmuję się... (tu wpisz swój zawód/zainteresowania).
+        
+        W wolnym czasie nie tylko chłonę kulturę, ale też staram się tworzyć własne rozwiązania. Ta strona jest jednym z przykładów mojego dążenia do uporządkowania świata wokół mnie.`,
+        
+        buttonText: "Zobacz moją kolekcję",
         buttonText: "Przeglądaj listę",
         
         // --- NOWE DANE KONTAKTOWE ---
@@ -14,7 +22,30 @@ window.myAppConfig = {
             { name: "LinkedIn", url: "https://www.linkedin.com/in/hubert-zochowski/" }
         ]
     },
-
+// --- NOWOŚĆ: SEKJA PROJEKTY I OSIĄGNIĘCIA ---
+    projects: [
+        {
+            title: "123",
+            role: "123",
+            year: "2025",
+            description: "123",
+            link: "#" // Link do projektu (lub # jeśli brak)
+        },
+        {
+            title: "234",
+            role: "Uczestnik",
+            year: "234",
+            description: "234",
+            link: "" 
+        },
+        {
+            title: "345Z",
+            role: "345",
+            year: "2023",
+            description: "345",
+            link: "" 
+        }
+    ],
     items: [
         // --- NOWE POZYCJE (2025) ---
         {
@@ -142,4 +173,5 @@ window.myAppConfig = {
     ]
 
 };
+
 
