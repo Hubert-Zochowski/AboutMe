@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje Portfolio</title>
+    
+    <script src="data.js"></script>
+
+    <style>
+        /* --- STYLE BAZOWE --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0; padding: 0; line-height: 1.6;
+            display: flex; flex-direction: column; min-height: 100vh; /* Ważne dla stopki */
+        }
+
+        :root { --surface: #1e1e1e; --accent: #6c5ce7; --text-sec: #a0a0a0; --border: #333; }
+
+        /* Error Box */
+        #error-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .error-content { border: 2px solid red; padding: 20px; background: #220000; color: white; max-width: 400px; }
+
+        /* Nav */
+        nav { background: #1a1a1a; padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo { font-weight: bold; font-size: 1.2rem; cursor: pointer; }
+        .nav-links button { background: none; border: none; color: var(--text-sec); font-size: 1rem; cursor: pointer; margin-left: 15px; font-family: inherit; transition: 0.3s; }
+        .nav-links button:hover, .nav-links button.active { color: var(--accent); }
+        .nav-links button.active { font-weight: bold; }
+
+        /* Main */
+        main { flex: 1; padding: 20px; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.4s; }
+
+        /* Hero */
+        .hero { text-align: center; padding: 40px 0; }
+        .avatar { width: 120px; height: 120px; background-color: #333; border-radius: 50%; display: inline-block; margin-bottom: 20px; object-fit: cover; border: 3px solid var(--accent); }
+        .btn-cta { background: var(--accent); color: white; border: none; padding: 10px 25px; border-radius: 20px; cursor: pointer; font-size: 1rem; margin-top: 20px; transition: transform 0.2s; }
+        .btn-cta:hover { transform: scale(1.05); }
+
+        /* Cytaty */
+        .quote-container { margin: 50px auto 20px auto; max-width: 700px; text-align: center; display: none; }
+        .quote-box { background: linear-gradient(145deg, #1e1e1e, #252525); border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent); padding: 30px; border-radius: 8px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .quote-box::before { content: "“"; font-family: Georgia, serif; font-size: 5rem; color: rgba(255, 255, 255, 0.05); position: absolute; top: -20px; left: 10px; }
+        .quote-text { font-size: 1.2rem; font-style: italic; color: #e0e0e0; margin-bottom: 20px; font-family: Georgia, serif; line-height: 1.6; }
+        .quote-author { font-size: 0.95rem; color: var(--accent); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; display: inline-block; border-top: 1px solid #444; padding-top: 10px; }
+
+        /* Statystyki */
+        .stats-header { margin-bottom: 30px; text-align: center; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .stat-card { background: var(--surface); padding: 25px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+        .stat-number { font-size: 3rem; font-weight: 800; color: var(--accent); margin-bottom: 5px; line-height: 1; }
+        .stat-label { color: var(--text-sec); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+
+        /* Kontrolery */
+        .controls-container { background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 30px; }
+        .search-row { margin-bottom: 15px; }
+        .search-input { width: 100%; max-width: 400px; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); background: #121212; color: white; font-size: 1rem; font-family: inherit; }
+        .search-input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+        .filters-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-btn { background: #121212; color: var(--text-sec); border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+        .filter-btn:hover { border-color: var(--accent); }
+        .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        select { background-color: #121212; color: #e0e0e0; border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-family: inherit; outline: none; }
+
+        /* Karty */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--surface); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-3px); border-color: #555; }
+        .card-img { height: 160px; background-color: #2d2d2d; width: 100%; display: flex; align-items: center; justify-content: center; color: #555; object-fit: cover; text-align: center; padding: 10px;}
+        .card-body { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+        .meta-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.8rem; }
+        .date-label { color: #777; }
+        .author-line { color: var(--accent); font-size: 0.9rem; margin-bottom: 5px; font-weight: 500; }
+        .badge { font-size: 0.7rem; text-transform: uppercase; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+        .cat-book { background: rgba(52, 152, 219, 0.2); color: #3498db; }
+        .cat-movie { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+        .cat-series { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .card-link-btn { display: inline-block; margin-top: auto; padding-top: 15px; color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: bold; }
+        .card-link-btn:hover { color: #fff; text-decoration: underline; }
+        .card-description { font-size: 0.9rem; color: #aaa; margin-top: 10px; white-space: pre-line; word-wrap: break-word; line-height: 1.5; }
+        .read-more-btn { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.85rem; font-weight: 600; padding: 0; margin-left: 5px; font-family: inherit; display: inline-block; }
+        .read-more-btn:hover { text-decoration: underline; }
+
+        /* --- NOWA SEKCJA: STOPKA / KONTAKT --- */
+        .site-footer {
+            background-color: #1a1a1a;
+            border-top: 1px solid var(--border);
+            padding: 40px 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .footer-content h3 {
+            margin-bottom: 10px;
+            color: var(--text-sec);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-email {
+            font-size: 1.3rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 25px;
+            transition: color 0.2s;
+        }
+        .footer-email:hover { color: #fff; }
+
+        .social-links-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            background: var(--surface);
+            color: var(--text-sec);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .social-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .footer-copy {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+        @media (max-width: 600px) { .filters-row { flex-direction: column; align-items: stretch; } select { width: 100%; } }
+    </style>
+</head>
+<body>
+
+    <div id="error-overlay">
+        <div class="error-content">
+            <h3>⚠ Nie widać pliku data.js</h3>
+            <p>Upewnij się, że plik <b>data.js</b> leży w tym samym folderze co ten plik.</p>
+            <button onclick="location.reload()" style="margin-top:10px; cursor:pointer;">Odśwież</button>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo" id="nav-name">...</div>
+        <div class="nav-links">
+            <button onclick="go('home')" class="active" id="btn-home">O mnie</button>
+            <button onclick="go('stats')" id="btn-stats">Statystyki</button>
+            <button onclick="go('tracker')" id="btn-tracker">Biblioteka</button>
+        </div>
+    </nav>
+
+    <main>
+        <section id="view-home" class="section active">
+            <div class="hero">
+                <img src="" onerror="this.style.display='none'" class="avatar" id="hero-img">
+                <div id="avatar-placeholder" class="avatar" style="display:none; line-height:120px; color:#555;">FOTO</div>
+                <h1 id="hero-title">...</h1>
+                <p id="hero-bio" style="color:#aaa;">...</p>
+                <button class="btn-cta" onclick="go('tracker')" id="hero-btn">...</button>
+                
+                <div id="random-quote-container" class="quote-container">
+                    <div class="quote-box">
+                        <p class="quote-text" id="quote-text">...</p>
+                        <div class="quote-author" id="quote-author">...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-stats" class="section">
+            <div class="stats-header">
+                <h2 id="stats-year-title">Podsumowanie Roku ....</h2>
+                <p style="color:#777">Twoja aktywność kulturalna w bieżącym roku.</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-books">0</div>
+                    <div class="stat-label">Przeczytane Książki</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-movies">0</div>
+                    <div class="stat-label">Obejrzane Filmy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-series">0</div>
+                    <div class="stat-label">Seriale</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-total" style="color:white">0</div>
+                    <div class="stat-label">Łącznie w tym roku</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-tracker" class="section">
+            <div class="controls-container">
+                <div class="search-row">
+                    <input type="text" id="search-input" class="search-input" placeholder="Szukaj po tytule lub autorze..." oninput="handleSearch(this.value)">
+                </div>
+                <div class="filters-row">
+                    <div class="btn-group">
+                        <button class="filter-btn active" onclick="setFilter('all', this)">Wszystko</button>
+                        <button class="filter-btn" onclick="setFilter('book', this)">Książki</button>
+                        <button class="filter-btn" onclick="setFilter('movie', this)">Filmy</button>
+                        <button class="filter-btn" onclick="setFilter('series', this)">Seriale</button>
+                    </div>
+                    <select id="sort-select" onchange="setSort(this.value)">
+                        <option value="newest">Najnowsze (Data)</option>
+                        <option value="oldest">Najstarsze (Data)</option>
+                        <option value="rating-high">Ocena: Najwyższa</option>
+                        <option value="rating-low">Ocena: Najniższa</option>
+                    </select>
+                </div>
+            </div>
+            <div id="grid" class="grid"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <h3>Skontaktuj się ze mną</h3>
+            <a href="mailto:..." id="footer-email" class="footer-email">...</a>
+            
+            <div id="footer-socials" class="social-links-container">
+                </div>
+
+            <div class="footer-copy">
+                &copy; <span id="footer-year"></span> Personal Culture Tracker
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. ZMIENNE STANU ---
+        let currentFilter = 'all';
+        let currentSort = 'newest'; 
+        let currentSearch = '';
+
+        // --- 2. START APLIKACJI ---
+        if (typeof window.myAppConfig === 'undefined') {
+            document.getElementById('error-overlay').style.display = 'flex';
+        } else {
+            startApp();
+        }
+
+        function startApp() {
+            const data = window.myAppConfig;
+            
+            // Profil
+            document.getElementById('nav-name').innerText = data.profile.name;
+            document.getElementById('hero-title').innerText = data.profile.welcomeMessage;
+            document.getElementById('hero-bio').innerText = data.profile.bio;
+            document.getElementById('hero-btn').innerText = data.profile.buttonText;
+
+            const imgEl = document.getElementById('hero-img');
+            if(data.profile.image) {
+                imgEl.src = data.profile.image;
+            } else { 
+                imgEl.style.display = 'none'; 
+                document.getElementById('avatar-placeholder').style.display = 'inline-block'; 
+            }
+
+            // Obsługa Stopki (Email + Sociale)
+            if(data.profile.email) {
+                const mailLink = document.getElementById('footer-email');
+                mailLink.innerText = data.profile.email;
+                mailLink.href = "mailto:" + data.profile.email;
+            }
+            
+            if(data.profile.socialLinks) {
+                const socialContainer = document.getElementById('footer-socials');
+                data.profile.socialLinks.forEach(link => {
+                    const btn = document.createElement('a');
+                    btn.href = link.url;
+                    btn.innerText = link.name;
+                    btn.className = 'social-btn';
+                    btn.target = "_blank"; // Otwórz w nowym oknie
+                    socialContainer.appendChild(btn);
+                });
+            }
+            document.getElementById('footer-year').innerText = new Date().getFullYear();
+
+            renderRandomQuote(); 
+            calculateStats();
+            processAndRender();
+        }
+
+        // --- 3. LOSOWY CYTAT ---
+        function renderRandomQuote() {
+            const data = window.myAppConfig;
+            if (data.quotes && data.quotes.length > 0) {
+                const randomIndex = Math.floor(Math.random() * data.quotes.length);
+                const randomQuote = data.quotes[randomIndex];
+                document.getElementById('quote-text').innerText = randomQuote.text;
+                document.getElementById('quote-author').innerText = randomQuote.author;
+                document.getElementById('random-quote-container').style.display = 'block';
+            }
+        }
+
+        // --- 4. STATYSTYKI ---
+        function calculateStats() {
+            const currentYear = new Date().getFullYear();
+            document.getElementById('stats-year-title').innerText = `Podsumowanie Roku ${currentYear}`;
+            const items = window.myAppConfig.items;
+            const thisYearItems = items.filter(item => item.date.startsWith(currentYear.toString()));
+            document.getElementById('stat-books').innerText = thisYearItems.filter(i => i.category === 'book').length;
+            document.getElementById('stat-movies').innerText = thisYearItems.filter(i => i.category === 'movie').length;
+            document.getElementById('stat-series').innerText = thisYearItems.filter(i => i.category === 'series').length;
+            document.getElementById('stat-total').innerText = thisYearItems.length;
+        }
+
+        // --- 5. POMOCNICZE (Wyszukiwanie, Filtry) ---
+        function handleSearch(val) {
+            currentSearch = val.toLowerCase();
+            processAndRender();
+        }
+
+        function setFilter(cat, btn) {
+            currentFilter = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            processAndRender();
+        }
+
+        function setSort(val) {
+            currentSort = val;
+            processAndRender();
+        }
+
+        // --- 6. OPISY Z PRZYCISKIEM ---
+        function processDescription(text, id) {
+            const limit = 120;
+            if (!text) return '';
+            if (text.length <= limit) return text;
+            const shortText = text.substring(0, limit) + "...";
+            const fullText = text;
+            return `
+                <span id="desc-short-${id}">${shortText}</span>
+                <span id="desc-full-${id}" style="display:none;">${fullText}</span>
+                <button onclick="toggleReadMore(${id})" id="btn-more-${id}" class="read-more-btn">Czytaj dalej</button>
+            `;
+        }
+
+        window.toggleReadMore = function(id) {
+            const shortSpan = document.getElementById(`desc-short-${id}`);
+            const fullSpan = document.getElementById(`desc-full-${id}`);
+            const btn = document.getElementById(`btn-more-${id}`);
+            if (fullSpan.style.display === "none") {
+                fullSpan.style.display = "inline";
+                shortSpan.style.display = "none";
+                btn.innerText = " « Zwiń";
+            } else {
+                fullSpan.style.display = "none";
+                shortSpan.style.display = "inline";
+                btn.innerText = "Czytaj dalej";
+            }
+        };
+
+        // --- 7. RENDEROWANIE ---
+        function processAndRender() {
+            let items = [...window.myAppConfig.items];
+            if (currentFilter !== 'all') {
+                items = items.filter(item => item.category === currentFilter);
+            }
+            if (currentSearch.length > 0) {
+                items = items.filter(item => {
+                    const inTitle = item.title.toLowerCase().includes(currentSearch);
+                    const inAuthor = item.author && item.author.toLowerCase().includes(currentSearch);
+                    return inTitle || inAuthor;
+                });
+            }
+            items.sort((a, b) => {
+                if (currentSort === 'newest') return new Date(b.date) - new Date(a.date);
+                if (currentSort === 'oldest') return new Date(a.date) - new Date(b.date);
+                if (currentSort === 'rating-high') return b.rating - a.rating;
+                if (currentSort === 'rating-low') return a.rating - b.rating;
+                return 0;
+            });
+            renderGrid(items);
+        }
+
+        function renderGrid(items) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            if(items.length === 0) {
+                grid.innerHTML = '<p style="color:#777; grid-column: 1/-1; text-align:center;">Brak wyników.</p>';
+                return;
+            }
+            items.forEach(item => {
+                let badgeClass = item.category === 'book' ? 'cat-book' : item.category === 'movie' ? 'cat-movie' : 'cat-series';
+                let catName = item.category === 'book' ? 'KSIĄŻKA' : item.category === 'movie' ? 'FILM' : 'SERIAL';
+                let imgHtml = item.image 
+                    ? `<img src="${item.image}" class="card-img" alt="${item.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">` 
+                    : `<div class="card-img">${item.title}</div>`;
+                let linkHtml = item.link 
+                    ? `<a href="${item.link}" target="_blank" class="card-link-btn">Zobacz więcej ↗</a>` 
+                    : '';
+                let authorHtml = item.author 
+                    ? `<div class="author-line">${item.author}</div>` 
+                    : '';
+                let descriptionHtml = processDescription(item.description, item.id);
+                let html = `
+                    <div class="card">
+                        ${imgHtml}
+                        <div class="card-body">
+                            <div class="meta-row">
+                                <span class="badge ${badgeClass}">${catName}</span>
+                                <span class="date-label">${item.date}</span>
+                            </div>
+                            <h3 style="margin:0 0 2px 0; font-size:1.2rem;">${item.title}</h3>
+                            ${authorHtml}
+                            <div style="color:#f1c40f; font-weight:bold; font-size:0.9rem; margin-top:5px;">★ ${item.rating}/10</div>
+                            <p class="card-description">${descriptionHtml}</p>
+                            ${linkHtml}
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        // --- 8. NAWIGACJA ---
+        function go(view) {
+            document.querySelectorAll('.section').forEach(e => e.classList.remove('active'));
+            document.getElementById('view-' + view).classList.add('active');
+            document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+            if(view === 'home') document.getElementById('btn-home').classList.add('active');
+            if(view === 'stats') document.getElementById('btn-stats').classList.add('active');
+            if(view === 'tracker') document.getElementById('btn-tracker').classList.add('active');
+        }
+    </script>
+</body>
+</html>
