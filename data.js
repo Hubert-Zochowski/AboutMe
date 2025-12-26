@@ -27,21 +27,21 @@ window.myAppConfig = {
         {
             title: "Testowanie i wdrażanie złożonych systemów IT",
             role: "Inżynier DevOps",
-            year: "2019",
+            year: "2014 - 2019",
             description: "5 lat doświadczenia w tworzeniu i rozwijaniu skomplikowanych systemów informatycznych w dynamicznej i złożonej strukturze",
-            link: "#" // Link do projektu (lub # jeśli brak)
+            link: "" // Link do projektu (lub # jeśli brak)
         },
         {
             title: "Kierownik Działu Jakości Oprogramowania",
             role: "Manager",
-            year: "2021",
+            year: "2019 - 2021",
             description: "Zarządzałem zespołem specjalistów IT zajmujących się dostarczaniem informacji o jakości rozwiązań ibformatycznych",
             link: "" 
         },
         {
             title: "Kierownik działu usług IT - Sprzedaż",
             role: "Manager",
-            year: "2026",
+            year: "2021 - until now",
             description: "Zarządzam 30osobowym zespołem specjalistów IT: analitycy, programiści, testerzy i administratorzy",
             link: "" 
         }
