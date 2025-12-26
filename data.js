@@ -150,7 +150,7 @@ window.myAppConfig = {
 {
             id: 19,
             title: "W stronę długowieczności",
-            author: "Marek Pustuła i Marcin Łuniewski",
+            author: "Marek Postuła i Krzysztof Łoniewski",
             category: "book",
             rating: 10,
             date: "2025-12-01",
