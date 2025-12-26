@@ -6,12 +6,12 @@ window.myAppConfig = {
         image: "https://github.com/Hubert-Zochowski/AboutMe/blob/main/me.jpg?raw=true", 
         welcomeMessage: "Cześć, miło mi Cię powitać na mojej stronie",
         // Krótkie bio pod zdjęciem
-        bio: "Pasjonat technologii, kultury i rozwoju osobistego.",
+        bio: "Pasjonat technologii, ludzi i rozwoju osobistego. Specjalizuję się w rozwiązywaniu problemów i znajdowaniu dróg dotarcia do rezultatów",
         
         // --- NOWOŚĆ: DŁUŻSZY OPIS O TOBIE ---
-        aboutMeExtended: `Jestem osobą, która uwielbia łączyć kropki między różnymi dziedzinami wiedzy. Na co dzień zajmuję się... (tu wpisz swój zawód/zainteresowania).
+        aboutMeExtended: `Jestem osobą, która uwielbia łączyć kropki między różnymi dziedzinami wiedzy. Na co dzień zajmuję się tworzeniem systemów informatycznych w branży farmaceutycznej. Zarządzam 30osobowym zespołem IT, który autonomicznie dostarcza wartość biznesową.
         
-        W wolnym czasie nie tylko chłonę kulturę, ale też staram się tworzyć własne rozwiązania. Ta strona jest jednym z przykładów mojego dążenia do uporządkowania świata wokół mnie.`,
+        W wolnym czasie nie tylko stawiam na rozwój osobisty, ale także na spędzanie czasu z moją rodziną. Poznaję siebie przy wsparciu mojej cudownej rodziny: żony Edytki i dzieci Agatki oraz Ksawerego`,
         
         buttonText: "Zobacz moją kolekcję",
         buttonText: "Przeglądaj listę",
@@ -25,24 +25,24 @@ window.myAppConfig = {
 // --- NOWOŚĆ: SEKJA PROJEKTY I OSIĄGNIĘCIA ---
     projects: [
         {
-            title: "123",
-            role: "123",
-            year: "2025",
-            description: "123",
+            title: "Testowanie i wdrażanie złożonych systemów IT",
+            role: "Inżynier DevOps",
+            year: "2019",
+            description: "5 lat doświadczenia w tworzeniu i rozwijaniu skomplikowanych systemów informatycznych w dynamicznej i złożonej strukturze",
             link: "#" // Link do projektu (lub # jeśli brak)
         },
         {
-            title: "234",
-            role: "Uczestnik",
-            year: "234",
-            description: "234",
+            title: "Kierownik Działu Jakości Oprogramowania",
+            role: "Manager",
+            year: "2021",
+            description: "Zarządzałem zespołem specjalistów IT zajmujących się dostarczaniem informacji o jakości rozwiązań ibformatycznych",
             link: "" 
         },
         {
-            title: "345Z",
-            role: "345",
-            year: "2023",
-            description: "345",
+            title: "Kierownik działu usług IT - Sprzedaż",
+            role: "Manager",
+            year: "2026",
+            description: "Zarządzam 30osobowym zespołem specjalistów IT: analitycy, programiści, testerzy i administratorzy",
             link: "" 
         }
     ],
