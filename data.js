@@ -147,6 +147,17 @@ window.myAppConfig = {
             description: `Fascynująca historia technologii, która rządzi światem. Jak walka o półprzewodniki kształtuje geopolitykę USA i Chin.`,
             link: "https://www.filmweb.pl/serial/Heweliusz-2025-10025579"
         },
+{
+            id: 19,
+            title: "W stronę długowieczności",
+            author: "Marek Pustuła i Marcin Łuniewski",
+            category: "book",
+            rating: 10,
+            date: "2025-12-01",
+            image: "", 
+            description: `Jak długo możemy żyć?`,
+link:""
+        },
     ],
 	// --- NOWA ODRĘBNA SEKCJA CYTATÓW ---
     quotes: [
