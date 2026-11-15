@@ -127,7 +127,7 @@
         .about-extended h3 { margin-top: 0; color: var(--accent); font-size: 1.5rem; margin-bottom: 20px;}
 
         /* Karty Projektów & Biblioteki */
-        .grid, .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .grid, .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 25px; }
         
         .card, .project-card { 
             background: var(--surface); 
@@ -182,7 +182,8 @@
             background: var(--surface); padding: 25px; border-radius: var(--radius); 
             border: 1px solid rgba(255,255,255,0.03); margin-bottom: 40px; 
         }
-        .search-input { 
+        .search-input {
+            box-sizing: border-box; 
             width: 100%; max-width: 400px; padding: 14px 20px; border-radius: 12px; 
             border: 1px solid var(--border); background: #0a0a0a; color: white; 
             font-size: 1rem; transition: 0.3s;
@@ -271,7 +272,7 @@
     <main>
         <section id="view-home" class="section active">
             <div class="hero scroll-hidden">
-                <img src="" onerror="this.style.display='none'" class="avatar" id="hero-img">
+                <img onerror="this.style.display='none'; document.getElementById('avatar-placeholder').style.display='inline-block'" class="avatar" id="hero-img">
                 <div id="avatar-placeholder" class="avatar" style="display:none; line-height:140px; color:#555; text-align:center;">FOTO</div>
                 <h1 id="hero-title">...</h1>
                 <p id="hero-bio">...</p>
@@ -464,7 +465,7 @@
             items.forEach((item, index) => {
                 let badgeClass = item.category === 'book' ? 'cat-book' : item.category === 'movie' ? 'cat-movie' : 'cat-series';
                 let catName = item.category === 'book' ? 'KSIĄŻKA' : item.category === 'movie' ? 'FILM' : 'SERIAL';
-                let imgHtml = item.image ? `<img src="${item.image}" class="card-img" alt="${item.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">` : `<div class="card-img">${item.title}</div>`;
+                let imgHtml = item.image ? `<img src="${item.image}" class="card-img" alt="${item.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><div class="card-img" style="display:none">${item.title}</div>` : `<div class="card-img">${item.title}</div>`;
                 let linkHtml = item.link ? `<a href="${item.link}" target="_blank" style="margin-top:auto; color:var(--accent); text-decoration:none; font-size:0.9rem;">Więcej &rarr;</a>` : '';
                 let authorHtml = item.author ? `<div style="color:var(--accent); font-size:0.9rem; font-weight:600; margin-bottom:5px;">${item.author}</div>` : '';
                 let descHtml = processDescription(item.description, item.id);
