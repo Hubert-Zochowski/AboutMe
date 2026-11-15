@@ -1,0 +1,6 @@
+# Copy to worker/.dev.vars. Never commit the populated file.
+# These values are not needed for the health page or automated local tests.
+APP_ORIGIN=http://localhost:8787
+ADMIN_GITHUB_USER_ID=
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=

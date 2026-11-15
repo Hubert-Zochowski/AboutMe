@@ -1,0 +1,21 @@
+{
+  "name": "aboutme-content-management",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev:admin": "wrangler dev --config worker/wrangler.jsonc --local",
+    "db:migrate:local": "wrangler d1 migrations apply DB --config worker/wrangler.jsonc --local",
+    "check": "tsc --noEmit",
+    "check:local": "node scripts/check-local.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "build:worker": "wrangler deploy --config worker/wrangler.jsonc --dry-run --outdir dist/worker"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261115.1",
+    "typescript": "7.0.2",
+    "wrangler": "4.162.0"
+  }
+}

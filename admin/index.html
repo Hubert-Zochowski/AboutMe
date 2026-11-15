@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Panel treści — AboutMe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/app.js"></script>
+</head>
+<body>
+    <main>
+        <p class="eyebrow">AboutMe · Zarządzanie treścią</p>
+        <h1>Panel treści</h1>
+        <p>W tym miejscu będziesz zarządzać biblioteką, projektami, cytatami i profilem.</p>
+        <section aria-labelledby="connection-title">
+            <h2 id="connection-title">Dostęp do panelu</h2>
+            <p id="status" role="status">Sprawdzanie połączenia…</p>
+            <a id="login" href="/auth/login" hidden>Zaloguj przez GitHub</a>
+            <button id="logout" type="button" hidden>Wyloguj</button>
+            <button id="retry" type="button" hidden>Spróbuj ponownie</button>
+        </section>
+        <p class="note">Pierwszy etap przygotowania panelu. Formularze i publikacja treści nie są jeszcze dostępne.</p>
+    </main>
+</body>
+</html>
