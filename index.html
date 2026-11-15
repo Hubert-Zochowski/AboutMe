@@ -50,7 +50,7 @@
             border-bottom: 1px solid rgba(255,255,255,0.05); 
             display: flex; justify-content: space-between; align-items: center; 
             position: sticky; top: 0; z-index: 100; 
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
         }
         
         .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -0.5px; cursor: pointer; }
@@ -66,7 +66,7 @@
             border-radius: 20px;
             font-family: inherit; 
             font-weight: 500;
-            transition: all 0.3s ease; 
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
         }
         
         .nav-links button:hover { color: white; background: rgba(255,255,255,0.05); }
@@ -84,7 +84,7 @@
         .scroll-hidden {
             opacity: 0;
             transform: translateY(40px); /* Przesunięcie w dół */
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); /* Bardzo płynna krzywa animacji */
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); /* Bardzo płynna krzywa animacji */
         }
         .scroll-show {
             opacity: 1;
@@ -247,6 +247,33 @@
             
             .grid { grid-template-columns: 1fr; }
         }
+        .ranking-panel { margin-top: 30px; padding: 25px; background: var(--surface); border-radius: var(--radius); }
+        .ranking-panel h3 { margin-top: 0; }
+        .ranking-list { padding-left: 28px; margin-bottom: 0; }
+        .ranking-list li { padding: 14px 0 14px 8px; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
+        .ranking-list li:last-child { border-bottom: none; }
+        .ranking-list li::marker { color: var(--accent); font-weight: 700; }
+        .ranking-row { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; }
+        .ranking-title { margin: 0; font-size: 1rem; }
+        .ranking-score { color: #f1c40f; white-space: nowrap; font-weight: 700; }
+        .ranking-meta { color: var(--text-sec); font-size: 0.85rem; }
+        .project-heading { margin-bottom: 10px; }
+        .project-description { color: #aaa; font-size: 0.9rem; line-height: 1.6; flex-grow: 1; }
+        .project-link, .item-link { margin-top: auto; color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+        .project-link { border-bottom: 1px solid var(--accent); display: inline-block; }
+        .item-date { color: #666; }
+        .item-title { margin: 0 0 5px; font-size: 1.1rem; line-height: 1.3; }
+        .item-author { color: var(--accent); font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
+        .item-rating { color: #f1c40f; font-weight: bold; font-size: 0.9rem; }
+        .empty-results { color: #777; }
+        .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+        button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { transition: none !important; animation: none !important; }
+            .scroll-hidden, .section.active { opacity: 1; transform: none; }
+            .card:hover, .project-card:hover, .btn-cta:hover, .social-btn:hover { transform: none; }
+        }
     </style>
 </head>
 <body>
@@ -259,10 +286,10 @@
         </div>
     </div>
 
-    <nav>
+    <nav aria-label="Nawigacja główna">
         <div class="logo" id="nav-name">...</div>
         <div class="nav-links">
-            <button onclick="go('home')" class="active" id="btn-home">O mnie</button>
+            <button onclick="go('home')" class="active" aria-current="page" id="btn-home">O mnie</button>
             <button onclick="go('projects')" id="btn-projects">Projekty</button>
             <button onclick="go('tracker')" id="btn-tracker">Biblioteka</button>
             <button onclick="go('stats')" id="btn-stats">Statystyki</button>
@@ -272,7 +299,7 @@
     <main>
         <section id="view-home" class="section active">
             <div class="hero scroll-hidden">
-                <img onerror="this.style.display='none'; document.getElementById('avatar-placeholder').style.display='inline-block'" class="avatar" id="hero-img">
+                <img onerror="this.style.display='none'; document.getElementById('avatar-placeholder').style.display='inline-block'" class="avatar" id="hero-img" alt="Zdjęcie profilowe" width="140" height="140" decoding="async">
                 <div id="avatar-placeholder" class="avatar" style="display:none; line-height:140px; color:#555; text-align:center;">FOTO</div>
                 <h1 id="hero-title">...</h1>
                 <p id="hero-bio">...</p>
@@ -304,35 +331,45 @@
         <section id="view-tracker" class="section">
             <div class="controls-container scroll-hidden">
                 <div class="search-row">
-                    <input type="text" id="search-input" class="search-input" placeholder="Szukaj..." oninput="handleSearch(this.value)">
+                    <input type="text" id="search-input" aria-label="Szukaj po tytule lub autorze" class="search-input" placeholder="Szukaj..." oninput="handleSearch(this.value)">
                 </div>
                 <div class="filters-row">
                     <div class="btn-group">
-                        <button class="filter-btn active" onclick="setFilter('all', this)">Wszystko</button>
-                        <button class="filter-btn" onclick="setFilter('book', this)">Książki</button>
-                        <button class="filter-btn" onclick="setFilter('movie', this)">Filmy</button>
-                        <button class="filter-btn" onclick="setFilter('series', this)">Seriale</button>
+                        <button class="filter-btn active" aria-pressed="true" onclick="setFilter('all', this)">Wszystko</button>
+                        <button class="filter-btn" aria-pressed="false" onclick="setFilter('book', this)">Książki</button>
+                        <button class="filter-btn" aria-pressed="false" onclick="setFilter('movie', this)">Filmy</button>
+                        <button class="filter-btn" aria-pressed="false" onclick="setFilter('series', this)">Seriale</button>
                     </div>
-                    <select id="sort-select" onchange="setSort(this.value)">
+                    <select id="sort-select" aria-label="Sortowanie biblioteki" onchange="setSort(this.value)">
                         <option value="newest">Najnowsze</option>
                         <option value="oldest">Najstarsze</option>
                         <option value="rating-high">Ocena: Najwyższa</option>
                     </select>
                 </div>
             </div>
-            <div id="grid" class="grid"></div>
+            <p id="results-status" class="visually-hidden" role="status"></p><div id="grid" class="grid"></div>
         </section>
 
         <section id="view-stats" class="section">
             <div class="hero scroll-hidden" style="padding: 20px 0 40px 0;">
                 <h2 id="stats-year-title" style="font-size:2rem; margin-bottom:10px;">Podsumowanie</h2>
                 <p style="color:#777">Liczby nie kłamią.</p>
+                <label for="stats-year-select">Wybierz rok:</label>
+                <select id="stats-year-select"></select>
+                <p id="stats-status" class="visually-hidden" role="status"></p>
             </div>
             <div class="stats-grid">
                 <div class="stat-card scroll-hidden"><div class="stat-number" id="stat-books">0</div><span class="stat-label">Książki</span></div>
                 <div class="stat-card scroll-hidden"><div class="stat-number" id="stat-movies">0</div><span class="stat-label">Filmy</span></div>
                 <div class="stat-card scroll-hidden"><div class="stat-number" id="stat-series">0</div><span class="stat-label">Seriale</span></div>
                 <div class="stat-card scroll-hidden"><div class="stat-number" id="stat-total" style="color:white">0</div><span class="stat-label">Łącznie</span></div>
+            </div>
+            <div class="ranking-panel">
+                <h3 id="ranking-title">Najlepsze pozycje roku</h3>
+                <p>Średnia ocena: <strong id="stats-average">—</strong> <span id="stats-rated-count"></span></p>
+                <p class="ranking-meta">Ranking według ocen. Przy remisie pozycje mają to samo miejsce; najnowsze są wyświetlane najpierw.</p>
+                <ol id="stats-ranking" class="ranking-list" aria-labelledby="ranking-title"></ol>
+                <p id="ranking-empty" hidden>Brak ocenionych pozycji w wybranym roku.</p>
             </div>
         </section>
     </main>
@@ -348,31 +385,57 @@
 
     <script>
         let currentFilter = 'all';
-        let currentSort = 'newest'; 
+        let currentSort = 'newest';
         let currentSearch = '';
-
-        // --- OBSERVER DO ANIMACJI SCROLLOWANIA ---
-        // To jest serce "doczytywania" przy scrollu
-        const observerOptions = {
-            threshold: 0.1, // Element musi być w 10% widoczny, żeby odpalić animację
-            rootMargin: "0px 0px -50px 0px" // Lekki margines od dołu
-        };
-
-        const observer = new IntersectionObserver((entries) => {
+        let searchTimer;
+        let libraryItems = [];
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('scroll-show');
-                    observer.unobserve(entry.target); // Animuj tylko raz
+                    observer.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.1 }) : null;
 
         function observeElements() {
-            // Szukamy wszystkich elementów z klasą 'scroll-hidden' i zaczynamy je obserwować
-            document.querySelectorAll('.scroll-hidden').forEach((el) => observer.observe(el));
+            document.querySelectorAll('.section.active .scroll-hidden:not(.scroll-show), footer.scroll-hidden:not(.scroll-show)').forEach(el => {
+                if (!observer || reducedMotion.matches) el.classList.add('scroll-show');
+                else observer.observe(el);
+            });
+        }
+        reducedMotion.addEventListener('change', () => {
+            if (observer) observer.disconnect();
+            observeElements();
+        });
+
+        function element(tag, className = '', text) {
+            const node = document.createElement(tag);
+            node.className = className;
+            if (text != null) node.textContent = text;
+            return node;
+        }
+        function safeUrl(value) {
+            if (typeof value !== 'string' || !value.trim()) return null;
+            try {
+                const url = new URL(value, document.baseURI);
+                // Local assets also work when the page is opened directly from disk.
+                if (['http:', 'https:'].includes(url.protocol) ||
+                    (location.protocol === 'file:' && url.protocol === 'file:')) return url.href;
+            } catch (_) { /* Invalid addresses are omitted. */ }
+            return null;
+        }
+        function externalLink(value, text, className) {
+            const href = safeUrl(value);
+            if (!href) return null;
+            const link = element('a', className, text);
+            link.href = href;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            return link;
         }
 
-        // --- START ---
         if (typeof window.myAppConfig === 'undefined') {
             document.getElementById('error-overlay').style.display = 'flex';
         } else {
@@ -381,170 +444,239 @@
 
         function startApp() {
             const data = window.myAppConfig;
-            
-            // Wypełnianie danych profilu
-            document.getElementById('nav-name').innerText = data.profile.name;
-            document.getElementById('hero-title').innerText = data.profile.welcomeMessage;
-            document.getElementById('hero-bio').innerText = data.profile.bio;
-            
+            libraryItems = (data.items || []).map(item => ({
+                ...item,
+                searchText: `${item.title || ''} ${item.author || ''}`.toLocaleLowerCase('pl'),
+                timestamp: Date.parse(item.date) || 0
+            }));
+            document.getElementById('nav-name').textContent = data.profile.name;
+            document.getElementById('hero-title').textContent = data.profile.welcomeMessage;
+            document.getElementById('hero-bio').textContent = data.profile.bio;
             if (data.profile.aboutMeExtended) {
                 document.getElementById('about-extended-container').style.display = 'block';
-                document.getElementById('about-extended-text').innerText = data.profile.aboutMeExtended;
+                document.getElementById('about-extended-text').textContent = data.profile.aboutMeExtended;
             }
-
-            const imgEl = document.getElementById('hero-img');
-            if(data.profile.image) imgEl.src = data.profile.image;
-            else { imgEl.style.display = 'none'; document.getElementById('avatar-placeholder').style.display = 'inline-block'; }
-
-            // Stopka
-            if(data.profile.email) {
-                const mail = document.getElementById('footer-email');
-                mail.innerText = data.profile.email;
-                mail.href = "mailto:" + data.profile.email;
+            const image = document.getElementById('hero-img');
+            image.alt = `Zdjęcie profilowe: ${data.profile.name}`;
+            const imageUrl = safeUrl(data.profile.image);
+            if (imageUrl) image.src = imageUrl;
+            else {
+                image.style.display = 'none';
+                document.getElementById('avatar-placeholder').style.display = 'inline-block';
             }
-            if(data.profile.socialLinks) {
-                const socialContainer = document.getElementById('footer-socials');
-                socialContainer.innerHTML = '';
-                data.profile.socialLinks.forEach(link => {
-                    const btn = document.createElement('a');
-                    btn.href = link.url; btn.innerText = link.name; btn.className = 'social-btn'; btn.target = "_blank";
-                    socialContainer.appendChild(btn);
-                });
-            }
-            document.getElementById('footer-year').innerText = new Date().getFullYear();
-
-            // Renderowanie sekcji
+            const mail = document.getElementById('footer-email');
+            if (data.profile.email) {
+                mail.textContent = data.profile.email;
+                mail.href = 'mailto:' + data.profile.email;
+            } else mail.hidden = true;
+            const socials = document.createDocumentFragment();
+            (data.profile.socialLinks || []).forEach(link => {
+                const button = externalLink(link.url, link.name, 'social-btn');
+                if (button) socials.append(button);
+            });
+            document.getElementById('footer-socials').replaceChildren(socials);
+            document.getElementById('footer-year').textContent = new Date().getFullYear();
             renderProjects();
-            renderRandomQuote(); 
-            calculateStats();
+            renderRandomQuote();
+            initializeStatsYears();
             processAndRender();
-
-            // Uruchomienie obserwatora animacji po załadowaniu
-            setTimeout(observeElements, 100);
         }
 
         function renderProjects() {
-            const projects = window.myAppConfig.projects;
-            const container = document.getElementById('projects-grid');
-            container.innerHTML = '';
-            if (!projects || projects.length === 0) { container.innerHTML = '<p>Brak projektów.</p>'; return; }
-
-            projects.forEach((p, index) => {
-                let linkHtml = p.link ? `<a href="${p.link}" target="_blank" style="color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent); margin-top:auto; display:inline-block; font-size:0.9rem;">Zobacz &rarr;</a>` : '';
-                // Dodajemy klasę scroll-hidden oraz opóźnienie (style) dla efektu kaskady
-                let html = `
-                    <div class="project-card scroll-hidden" style="transition-delay: ${index * 50}ms">
-                        <div style="margin-bottom:10px;">
-                            <h3 class="project-title">${p.title}</h3>
-                            <span class="project-year">${p.year}</span>
-                        </div>
-                        <span class="project-role">${p.role}</span>
-                        <p style="color:#aaa; font-size:0.9rem; line-height:1.6; flex-grow:1;">${p.description}</p>
-                        ${linkHtml}
-                    </div>`;
-                container.insertAdjacentHTML('beforeend', html);
+            const fragment = document.createDocumentFragment();
+            const projects = window.myAppConfig.projects || [];
+            projects.forEach((project, index) => {
+                const card = element('div', 'project-card scroll-hidden');
+                card.style.transitionDelay = `${(index % 5) * 50}ms`;
+                const heading = element('div', 'project-heading');
+                heading.append(element('h3', 'project-title', project.title), element('span', 'project-year', project.year));
+                card.append(heading, element('span', 'project-role', project.role), element('p', 'project-description', project.description));
+                const link = externalLink(project.link, 'Zobacz →', 'project-link');
+                if (link) card.append(link);
+                fragment.append(card);
             });
+            if (!projects.length) fragment.append(element('p', '', 'Brak projektów.'));
+            document.getElementById('projects-grid').replaceChildren(fragment);
         }
 
         function processAndRender() {
-            let items = [...window.myAppConfig.items];
-            if (currentFilter !== 'all') items = items.filter(item => item.category === currentFilter);
-            if (currentSearch.length > 0) items = items.filter(item => (item.title.toLowerCase().includes(currentSearch) || (item.author && item.author.toLowerCase().includes(currentSearch))));
-            
-            items.sort((a, b) => {
-                if (currentSort === 'newest') return new Date(b.date) - new Date(a.date);
-                if (currentSort === 'oldest') return new Date(a.date) - new Date(b.date);
-                if (currentSort === 'rating-high') return b.rating - a.rating;
-                return 0;
-            });
-
+            clearTimeout(searchTimer);
+            let items = libraryItems.filter(item =>
+                (currentFilter === 'all' || item.category === currentFilter) &&
+                (!currentSearch || item.searchText.includes(currentSearch)));
+            items.sort((a, b) => currentSort === 'rating-high' ? b.rating - a.rating :
+                currentSort === 'oldest' ? a.timestamp - b.timestamp : b.timestamp - a.timestamp);
             const grid = document.getElementById('grid');
-            grid.innerHTML = '';
-            if(items.length === 0) { grid.innerHTML = '<p style="color:#777;">Brak wyników.</p>'; return; }
-
+            if (observer) grid.querySelectorAll('.scroll-hidden').forEach(node => observer.unobserve(node));
+            const fragment = document.createDocumentFragment();
             items.forEach((item, index) => {
-                let badgeClass = item.category === 'book' ? 'cat-book' : item.category === 'movie' ? 'cat-movie' : 'cat-series';
-                let catName = item.category === 'book' ? 'KSIĄŻKA' : item.category === 'movie' ? 'FILM' : 'SERIAL';
-                let imgHtml = item.image ? `<img src="${item.image}" class="card-img" alt="${item.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><div class="card-img" style="display:none">${item.title}</div>` : `<div class="card-img">${item.title}</div>`;
-                let linkHtml = item.link ? `<a href="${item.link}" target="_blank" style="margin-top:auto; color:var(--accent); text-decoration:none; font-size:0.9rem;">Więcej &rarr;</a>` : '';
-                let authorHtml = item.author ? `<div style="color:var(--accent); font-size:0.9rem; font-weight:600; margin-bottom:5px;">${item.author}</div>` : '';
-                let descHtml = processDescription(item.description, item.id);
-
-                let html = `
-                    <div class="card scroll-hidden" style="transition-delay: ${(index % 5) * 50}ms"> 
-                        ${imgHtml}
-                        <div class="card-body">
-                            <div class="meta-row"><span class="badge ${badgeClass}">${catName}</span><span style="color:#666;">${item.date}</span></div>
-                            <h3 style="margin:0 0 5px 0; font-size:1.1rem; line-height:1.3;">${item.title}</h3>
-                            ${authorHtml}
-                            <div style="color:#f1c40f; font-weight:bold; font-size:0.9rem;">★ ${item.rating}/10</div>
-                            <p class="card-description">${descHtml}</p>
-                            ${linkHtml}
-                        </div>
-                    </div>`;
-                grid.insertAdjacentHTML('beforeend', html);
+                const card = element('div', 'card scroll-hidden');
+                card.style.transitionDelay = `${(index % 5) * 50}ms`;
+                const fallback = element('div', 'card-img', item.title);
+                const imageUrl = safeUrl(item.image);
+                if (imageUrl) {
+                    const image = element('img', 'card-img');
+                    image.alt = item.title || '';
+                    image.loading = 'lazy';
+                    image.decoding = 'async';
+                    image.height = 180;
+                    fallback.style.display = 'none';
+                    image.addEventListener('error', () => {
+                        image.style.display = 'none';
+                        fallback.style.display = 'flex';
+                    }, { once: true });
+                    image.src = imageUrl;
+                    card.append(image);
+                }
+                card.append(fallback);
+                const body = element('div', 'card-body');
+                const meta = element('div', 'meta-row');
+                const categories = { book: 'KSIĄŻKA', movie: 'FILM', series: 'SERIAL' };
+                const category = Object.hasOwn(categories, item.category) ? item.category : 'series';
+                meta.append(element('span', `badge cat-${category}`, categories[category]), element('span', 'item-date', item.date));
+                body.append(meta, element('h3', 'item-title', item.title));
+                if (item.author) body.append(element('div', 'item-author', item.author));
+                body.append(element('div', 'item-rating', `★ ${item.rating}/10`), processDescription(item.description, index));
+                const link = externalLink(item.link, 'Więcej →', 'item-link');
+                if (link) body.append(link);
+                card.append(body);
+                fragment.append(card);
             });
-            
-            // Po wyrenderowaniu musimy "podpiąć" nowe elementy pod obserwatora
+            if (!items.length) fragment.append(element('p', 'empty-results', 'Brak wyników.'));
+            grid.replaceChildren(fragment);
+            document.getElementById('results-status').textContent = `Liczba wyników: ${items.length}`;
             observeElements();
         }
-
-        // Funkcje pomocnicze
-        function renderRandomQuote() {
-            const data = window.myAppConfig;
-            if (data.quotes && data.quotes.length > 0) {
-                const randomQuote = data.quotes[Math.floor(Math.random() * data.quotes.length)];
-                document.getElementById('quote-text').innerText = randomQuote.text;
-                document.getElementById('quote-author').innerText = randomQuote.author;
-                document.getElementById('random-quote-container').style.display = 'block';
+        function processDescription(value, index) {
+            const text = String(value || '');
+            const paragraph = element('p', 'card-description');
+            const content = element('span', '', text.length > 100 ? text.slice(0, 100) + '...' : text);
+            content.id = `description-${index}`;
+            paragraph.append(content);
+            if (text.length > 100) {
+                const button = element('button', 'read-more-btn', 'rozwiń');
+                button.type = 'button';
+                button.setAttribute('aria-expanded', 'false');
+                button.setAttribute('aria-controls', content.id);
+                button.addEventListener('click', () => {
+                    const expanded = button.getAttribute('aria-expanded') !== 'true';
+                    content.textContent = expanded ? text : text.slice(0, 100) + '...';
+                    button.textContent = expanded ? 'zwiń' : 'rozwiń';
+                    button.setAttribute('aria-expanded', String(expanded));
+                });
+                paragraph.append(button);
             }
+            return paragraph;
+        }
+        function renderRandomQuote() {
+            const quotes = window.myAppConfig.quotes || [];
+            if (!quotes.length) return;
+            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('quote-text').textContent = quote.text;
+            document.getElementById('quote-author').textContent = quote.author;
+            document.getElementById('random-quote-container').style.display = 'block';
+        }
+        function itemYear(item) {
+            const date = String(item.date || '');
+            return /^\d{4}-\d{2}-\d{2}$/.test(date) && Number.isFinite(Date.parse(date))
+                ? Number(date.slice(0, 4)) : null;
+        }
+        function initializeStatsYears() {
+            const currentYear = new Date().getFullYear();
+            const years = new Set([currentYear]);
+            libraryItems.forEach(item => {
+                const year = itemYear(item);
+                if (year !== null) years.add(year);
+            });
+            const select = document.getElementById('stats-year-select');
+            const options = [...years].sort((a, b) => b - a).map(year => {
+                const option = element('option', '', year);
+                option.value = String(year);
+                return option;
+            });
+            select.replaceChildren(...options);
+            select.value = String(currentYear);
+            select.addEventListener('change', calculateStats);
+            calculateStats();
         }
         function calculateStats() {
-            const year = new Date().getFullYear();
-            document.getElementById('stats-year-title').innerText = `Podsumowanie ${year}`;
-            const items = window.myAppConfig.items.filter(i => i.date.startsWith(year.toString()));
-            document.getElementById('stat-books').innerText = items.filter(i => i.category === 'book').length;
-            document.getElementById('stat-movies').innerText = items.filter(i => i.category === 'movie').length;
-            document.getElementById('stat-series').innerText = items.filter(i => i.category === 'series').length;
-            document.getElementById('stat-total').innerText = items.length;
+            const year = Number(document.getElementById('stats-year-select').value);
+            const counts = { book: 0, movie: 0, series: 0, total: 0 };
+            libraryItems.forEach(item => {
+                if (itemYear(item) === year) {
+                    counts.total++;
+                    if (['book', 'movie', 'series'].includes(item.category)) counts[item.category]++;
+                }
+            });
+            document.getElementById('stats-year-title').textContent = `Podsumowanie ${year}`;
+            document.getElementById('stats-status').textContent = `Rok ${year}: książki ${counts.book}, filmy ${counts.movie}, seriale ${counts.series}, łącznie ${counts.total}.`;
+            for (const [id, category] of Object.entries({ books: 'book', movies: 'movie', series: 'series', total: 'total' })) {
+                document.getElementById(`stat-${id}`).textContent = counts[category];
+            }
+            renderYearRanking(year);
         }
-        function handleSearch(val) { currentSearch = val.toLowerCase(); processAndRender(); }
-        function setFilter(cat, btn) { currentFilter = cat; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); if(btn) btn.classList.add('active'); processAndRender(); }
-        function setSort(val) { currentSort = val; processAndRender(); }
-        function processDescription(text, id) {
-            if (!text) return ''; const limit = 100; if(text.length <= limit) return text;
-            return `<span id="s-${id}">${text.substring(0,limit)}...</span><span id="f-${id}" style="display:none">${text}</span><button onclick="tg(${id})" id="b-${id}" class="read-more-btn">rozwiń</button>`;
+        function renderYearRanking(year) {
+            const ratedItems = libraryItems.filter(item => itemYear(item) === year &&
+                typeof item.rating === 'number' && Number.isFinite(item.rating) && item.rating >= 0 && item.rating <= 10);
+            ratedItems.sort((a, b) => b.rating - a.rating || b.timestamp - a.timestamp ||
+                String(a.title || '').localeCompare(String(b.title || ''), 'pl'));
+            const average = ratedItems.length
+                ? (ratedItems.reduce((sum, item) => sum + item.rating, 0) / ratedItems.length).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '/10'
+                : '—';
+            document.getElementById('ranking-title').textContent = `Najlepsze pozycje ${year}`;
+            document.getElementById('stats-average').textContent = average;
+            document.getElementById('stats-rated-count').textContent = `(liczba ocen: ${ratedItems.length})`;
+            document.getElementById('ranking-empty').hidden = ratedItems.length > 0;
+            const fragment = document.createDocumentFragment();
+            const categories = { book: 'Książka', movie: 'Film', series: 'Serial' };
+            let rank = 0;
+            ratedItems.forEach((item, index) => {
+                if (index === 0 || item.rating !== ratedItems[index - 1].rating) rank = index + 1;
+                const row = element('li');
+                row.value = rank;
+                const heading = element('div', 'ranking-row');
+                heading.append(element('h4', 'ranking-title', item.title), element('span', 'ranking-score', `★ ${item.rating.toLocaleString('pl-PL')}/10`));
+                const category = Object.hasOwn(categories, item.category) ? categories[item.category] : 'Inne';
+                const details = [category, item.author, item.date].filter(Boolean).join(' · ');
+                row.append(heading, element('div', 'ranking-meta', details));
+                const link = externalLink(item.link, 'Więcej →', 'item-link');
+                if (link) row.append(link);
+                fragment.append(row);
+            });
+            document.getElementById('stats-ranking').replaceChildren(fragment);
+            document.getElementById('stats-status').textContent += ` Średnia ocena: ${average}. Liczba ocen: ${ratedItems.length}.`;
         }
-        window.tg = function(id) {
-            let s=document.getElementById(`s-${id}`), f=document.getElementById(`f-${id}`), b=document.getElementById(`b-${id}`);
-            if(f.style.display==='none'){f.style.display='inline';s.style.display='none';b.innerText='zwiń';}else{f.style.display='none';s.style.display='inline';b.innerText='rozwiń';}
-        };
-
-        // --- NAWIGACJA + RESTART ANIMACJI ---
+        function handleSearch(value) {
+            currentSearch = value.trim().toLocaleLowerCase('pl');
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(processAndRender, 180);
+        }
+        function setFilter(category, button) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(node => {
+                node.classList.toggle('active', node === button);
+                node.setAttribute('aria-pressed', String(node === button));
+            });
+            processAndRender();
+        }
+        function setSort(value) {
+            currentSort = value;
+            processAndRender();
+        }
         function go(view) {
-            // Ukryj wszystko
-            document.querySelectorAll('.section').forEach(e => {
-                e.classList.remove('active');
-            });
-
-            // Aktywuj wybrany widok
             const activeSection = document.getElementById('view-' + view);
-            activeSection.classList.add('active');
-            
-            // Menu active state
-            document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
-            if(document.getElementById('btn-'+view)) document.getElementById('btn-'+view).classList.add('active');
-            
-            // Ważne: Przewiń na górę
-            window.scrollTo(0, 0);
-
-            // Zresetuj animacje wewnątrz nowej sekcji
-            // (Usuwamy klasę scroll-show, żeby obserwator mógł ją nadać ponownie przy przewijaniu)
-            activeSection.querySelectorAll('.scroll-hidden').forEach(el => {
-                el.classList.remove('scroll-show');
+            if (!activeSection) return;
+            if (observer) observer.disconnect();
+            document.querySelectorAll('.section').forEach(section => section.classList.toggle('active', section === activeSection));
+            document.querySelectorAll('.nav-links button').forEach(button => {
+                const active = button.id === 'btn-' + view;
+                button.classList.toggle('active', active);
+                if (active) button.setAttribute('aria-current', 'page');
+                else button.removeAttribute('aria-current');
             });
-
-            // Ponownie uruchom obserwatora dla elementów w tej sekcji
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            activeSection.setAttribute('tabindex', '-1');
+            activeSection.focus({ preventScroll: true });
             observeElements();
         }
     </script>
